@@ -1,0 +1,58 @@
+## Link
+https://youtu.be/TfJ1h10slY8?si=1kqH4xBcHl9-h9_j
+
+## Transcript
+
+00:00:00
+Hey everyone, welcome back to the how Claude code works series. In part one, we covered the agentic loop. Now, in part two, we're looking at what Claude code can actually do. We'll cover the five categories of built-in tools, everything Claude can access in your project, and how to extend it with skills, MCP servers, and hooks. Let's get into it. Claude Code comes with five categories of tools built in. File operations for reading, editing, and creating files. Search for finding files
+
+00:00:31
+by pattern and searching content with regex. Execution for running shell commands, starting servers, running tests, and using git. Web access for searching the web and fetching documentation. And code intelligence for seeing type errors, jumping to definitions, and finding references. These five categories cover pretty much everything you do as a developer. Here's how those tools work together in practice. When you say fix the failing tests, Claude doesn't just pick one tool. It chains them. First, it runs the
+
+00:01:04
+test suite, then reads the error output, then searches for the relevant source files, then reads those files, then edits the code to fix the issue, then runs the tests again to verify. Each tool call feeds the next decision. That's the agentic loop from part one. Powered by these five tool categories. Now let's talk about what Claude can actually access in your environment. It sees your entire project, all the files in your working directory. It has full terminal access, so it can run any
+
+00:01:36
+command your shell can. It reads your git state, branches, changes, and history. It reads your claw.md files for project specific instructions. It stores automemory things it learns across sessions and it can use extensions, MCP servers, custom skills and sub agents. All of this context is available to Claude as it works. Claude.md is a special file that gives Claude project specific instructions. You put it in your project route and Claude reads it at the start of every session. You can define coding conventions, specify test
+
+00:02:12
+commands, list important architecture decisions, anything you want Claude to always know about your project. Think of it as a persistent prompt that lives with your code. Your team can share it through version control. You can extend Claude code beyond the built-in tools in four ways. Skills are reusable prompt files that teach Claude new workflows. MCP servers connect external tools and data sources. Hooks let you run custom scripts before or after tool calls and sub aents let Claude spawn specialized
+
+00:02:44
+agents for focused tasks. Each extension point makes Claude more capable without changing the core. You can mix and match these to build exactly the workflow you need. Let's see Claude working across a real project. It searches for patterns across multiple files. Reads several files to understand the architecture. Makes coordinated edits across components. Then runs the tests to verify everything works together. This is where the tools and access really shine. Plot isn't limited to one file at
+
+00:03:15
+a time. It can understand and modify your entire codebase as a connected system. So that's tools and access. Five tool categories covering files, search, execution, web, and code intelligence. Full access to your project, terminal, git, and memory, and infinite extensibility through skills, MCP, hooks, and sub aents. In the next video, we'll dive into sessions and context, how Claude manages what it knows across a conversation. Like and subscribe for parts 3 through
+
+## Summary
+- Claude Code has **five categories of built‑in tools**:  
+  - **File operations**: read, edit, create files  
+  - **Search**: find files by pattern, search content with regex  
+  - **Execution**: run shell commands, start servers, run tests, use git  
+  - **Web access**: search the web, fetch documentation  
+  - **Code intelligence**: see type errors, jump to definitions, find references  
+
+- These tools are **chained together** in the agentic loop: run tests → read errors → search files → read files → edit code → rerun tests. Each tool call informs the next decision.  
+
+- Claude has **full access to your project environment**:  
+  - Entire project files in the working directory  
+  - Full terminal access for any shell command  
+  - Git state, branches, changes, history  
+  - `claude.md` file for project‑specific instructions  
+  - Automemory across sessions  
+
+- **claude.md** acts as a persistent prompt: coding conventions, test commands, architecture decisions, shared via version control.  
+
+- Claude Code can be **extended beyond built‑in tools** in four ways:  
+  - **Skills**: reusable prompt files for workflows  
+  - **MCP servers**: connect external tools and data sources  
+  - **Hooks**: run custom scripts before/after tool calls  
+  - **Sub‑agents**: spawn specialized agents for focused tasks  
+
+- In practice, Claude can:  
+  - Search patterns across multiple files  
+  - Read several files to understand architecture  
+  - Make coordinated edits across components  
+  - Run tests to verify everything works together  
+
+- Core takeaway: Claude Code combines five tool categories, full project access, and extensibility through skills, MCP, hooks, and sub‑agents, enabling it to understand and modify your entire codebase as a connected system.

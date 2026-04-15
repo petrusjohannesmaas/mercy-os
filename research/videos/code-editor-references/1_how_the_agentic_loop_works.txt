@@ -1,0 +1,40 @@
+## Link
+https://youtu.be/Dpmegqh23nY?si=kzcuCUol8pTdG_1k
+
+## Transcript
+
+00:00:00
+Hey everyone. In this video, I'm going to show you the core idea behind Claude Code. It's called the agentic loop. By the end, you'll understand how Claude Code reasons about your tasks, the three-phase cycle it uses, gather context, take action, and verify results, and how you fit into this loop as a human in the driver's seat. Let's dive in. When you give Claude Code a task, it works through three phases. Gather context, take action, verify results. These phases blend together,
+
+00:00:33
+and Claude keeps looping until the job is done. The agentic loop is powered by two components, models that reason and tools that act. Claude Code serves as the agentic harness. It provides the tools, context management, and execution environment that turn a language model into a capable coding agent. This is what makes it an agent, not just a chatbot. Let's zoom into the first phase, gathering context. Before Claude changes anything, it investigates. The docs give a great example. When you say
+
+00:01:05
+"Fix the failing tests," Claude first runs the test suite to see what's failing. Then it reads the error output. Then it searches for the relevant source files. Then reads those files to understand the code. Each tool call gives Claude new information that feeds the next step. Claude doesn't guess. It investigates first. Now the action phase. Once Claude understands the problem, it acts. It edits files, runs commands, creates new code. Look at the terminal below. See the green lines?
+
+00:01:37
+Those are additions. The red lines are removals. Each action is a tool call, and each tool call returns information that feeds the next decision. It's not a script. Claude is making choices at every step based on what it learned from the previous step. Then comes verification. Claude checks its own work. It runs the tests again to verify the fix. See those green checkmarks? If the tests pass, great, Claude is done. But if something fails, it loops back, gathers more context, tries a different
+
+00:02:09
+approach, verifies again. Claude decides what each step requires based on what it learned from the previous step, chaining dozens of actions together, and course-correcting along the way. Here's the key thing. You're part of this loop, too. See the you note on the diagram? You can interrupt at any point to steer Claude in a different direction, provide additional context, or ask it to try a different approach. Claude works autonomously, but stays responsive to your input. You don't have to wait for
+
+00:02:38
+it to finish or start over. Think of it as pair programming with a very fast colleague. The loop is powered by Claude models. Sonnet handles most coding tasks well. Opus provides stronger reasoning for complex architectural decisions. You can switch with {slash}model during a session, or start with Claude {hyphen} {hyphen} model and the model name. When the docs say Claude chooses or Claude decides, it's the model doing the reasoning. The tools stay the same. Only the reasoning changes. So that's the
+
+00:03:10
+agentic loop. Gather context, take action, verify results, and repeat until done, with you steering the whole time. In the next video, we'll look at the five categories of tools that power this loop and everything Claude can access in your project. Go try Claude Code, and I'll see you in part two
+
+## Summary
+
+- Claude Code is built around an **agentic loop**.  
+- The loop has **three phases**: gather context, take action, verify results.  
+- Claude begins by **investigating**: running tests, reading errors, searching files, and loading relevant docs.  
+- Once it understands the problem, it **acts**: editing files, running commands, generating code.  
+- Each action is a **tool call**, and results feed into the next decision.  
+- Claude then **verifies**: re‑runs tests or checks outputs to confirm success.  
+- If verification fails, it loops back to gather more context and tries again.  
+- The loop continues until the task is complete.  
+- The **human user remains in control**, able to interrupt, steer, or provide extra context at any point.  
+- Models provide reasoning, tools provide execution, and Claude orchestrates the loop as a coding agent.  
+
+This is the **core loop of Claude Code**: context → action → verification, repeated until done, with human guidance..

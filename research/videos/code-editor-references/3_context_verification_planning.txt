@@ -1,0 +1,46 @@
+## Link
+https://youtu.be/fcIBJvvkf5I?si=Q4joOVxezzfSrnyq
+
+## Transcript
+
+00:00:00
+The single highest leverage thing you can do with cloud code is give it a way to verify its own work. Tests, screenshots, expected outputs. That changes everything. By the end of this video, you will know how to write prompts that get it right the first time, plan before you code, and provide context that eliminates back and forth. Before we talk about prompts, you need to understand the core constraint. Claude's context window holds your entire conversation. every message, every file it reads, every command
+
+00:00:31
+output. This fills up fast. A single debugging session can consume tens of thousands of tokens. When the context is full, Claude starts forgetting earlier instructions. Managing context is the number one skill for using Claude code effectively. Give Claude a way to verify its own work. This is the single highest leverage thing you can do. Instead of implement a function that validates emails, say write validate email. Here are the test cases. Run the tests after implementing. Instead of make the
+
+00:01:02
+dashboard look better, paste a screenshot and say implement this design. Take a screenshot and compare. Without verification, you become the only feedback loop. The recommended workflow has four phases. First, explore. Enter plan mode. Claude reads files and answers questions without making changes. Second, plan. Ask Claude to create a detailed plan. Press CtrlG to edit it. Third, implement. Switch to normal mode and code against the plan. Fourth, commit and open a PR, but don't overdo it. If the fix fits in one
+
+00:01:38
+sentence, skip the plan. The more precise your instructions, the fewer corrections you need. Scope the task. Instead of add tests, say write a test for food. py covering the logged out edge case. Avoid mocks. Point to sources. Reference existing patterns. Describe symptoms instead of just saying fix the bug. Tell Claude what happens, where to look, and what fix looks like. Provide rich content. Use the add sign to reference files. Paste images directly. Give URLs for documentation. Pipe data in from the command line. And
+
+00:02:13
+for larger features, let Claude interview you first. Say, "Enter me about implementation, edge cases, and trade-offs." Claude asks about things you might not have considered. Start a fresh session to implement the spec. Your claude.md is loaded every session. Include bash commands Claude cannot guess, style rules that differ from defaults, testing instructions, and common gotchas. Exclude anything Claude can figure out by reading code. For each line, ask would removing this cause Claude to make mistakes. If not, cut it.
+
+00:02:48
+A bloated claw.md causes Claude to ignore your actual instructions. Quick recap. The context window is your most important resource. Give Claude verification criteria. Follow the explore, plan, implement, commit workflow. Write specific prompts that scope the task and describe symptoms. Use rich content and interviews for complex features. Next time, scaling with automation and avoiding common pitfalls. Add verification criteria to your next prompt.
+
+## Summary
+- The highest leverage practice in Claude Code is to **give it verification criteria** (tests, screenshots, expected outputs).  
+- Claude’s **context window** holds the entire conversation, files, and command outputs, but it fills quickly. Managing context is critical.  
+- Without verification, the human becomes the only feedback loop. With verification, Claude can check its own work.  
+- Recommended workflow has **four phases**:  
+  - **Explore**: enter plan mode, Claude reads files and answers questions without changes.  
+  - **Plan**: ask Claude to create a detailed plan, edit it if needed.  
+  - **Implement**: switch to normal mode and code against the plan.  
+  - **Commit**: open a PR or finalize changes. Skip planning for trivial fixes.  
+- Prompts should be **precise and scoped**: describe symptoms, point to sources, reference existing patterns, and avoid vague instructions.  
+- Use **rich content**: reference files with `@`, paste images, provide URLs, pipe command line data.  
+- For larger features, let Claude **interview you** about implementation, edge cases, and trade‑offs before coding.  
+- **claude.md** is loaded every session. Include only essential instructions (bash commands, style rules, testing steps, common gotchas). Remove anything Claude can infer from code to avoid bloat.  
+- Quick recap:  
+  - Manage the context window carefully.  
+  - Provide verification criteria.  
+  - Follow explore → plan → implement → commit workflow.  
+  - Write specific, scoped prompts.  
+  - Use rich content and interviews for complex features.  
+  - Keep `claude.md` lean and focused.  
+
+This defines the **core discipline for effective use of Claude Code**: verification, context management, structured workflow, and precise prompts.
+

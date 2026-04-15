@@ -1,0 +1,55 @@
+Here’s the consolidated set of **core features** you’d need to build for a barebones agentic code editing experience.
+
+---
+
+## Core Agentic Loop
+- **Gather context**: read files, run tests, inspect errors, search project sources.  
+- **Take action**: edit files, run commands, generate new code.  
+- **Verify results**: re‑run tests, check outputs, loop back if needed.  
+
+---
+
+## Tooling Categories
+- **File operations**: read, edit, create files.  
+- **Search**: find files by pattern, search content with regex.  
+- **Execution**: run shell commands, start servers, run tests, use git.  
+- **Web access**: fetch documentation, search the web.  
+- **Code intelligence**: type errors, jump to definitions, find references.  
+
+---
+
+## Context & Sessions
+- **Session management**: fresh sessions, resume, fork like git branching.  
+- **Context window**: track conversation, files, instructions, tool definitions.  
+- **Compaction**: summarize older context automatically or manually.  
+- **Sub‑agents**: spawn isolated contexts for large tasks, return summaries.  
+
+---
+
+## Safety & Control
+- **Checkpoints**: snapshot files before edits, reversible changes.  
+- **Permission modes**: default (ask before edits/commands), autoedit (free edits, confirm commands), plan (read‑only).  
+- **Allow lists**: trusted commands configured per project, user, or org.  
+
+---
+
+## Prompting & Workflow
+- **Verification criteria**: tests, screenshots, expected outputs.  
+- **Workflow phases**: explore → plan → implement → commit.  
+- **Scoped prompts**: precise instructions, symptoms, references, avoid vagueness.  
+- **Rich content**: file references, pasted images, URLs, command outputs.  
+- **claude.md equivalent**: persistent project rules, style conventions, test commands, common gotchas.  
+
+---
+
+## Consolidated Core
+A barebones agentic IDE needs:  
+1. The **agentic loop** (context → action → verification).  
+2. The **five tool categories** for file, search, execution, web, and code intelligence.  
+3. **Session/context management** with compaction and sub‑agents.  
+4. **Safety controls** via checkpoints, permission modes, and allow lists.  
+5. A **structured workflow** with verification criteria, scoped prompts, rich content, and persistent project rules.  
+
+---
+
+This is the minimal foundation for an agentic code editing system: a loop that reasons, acts, and verifies, powered by tools, context management, safety, and structured prompting.

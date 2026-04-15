@@ -1,0 +1,27 @@
+## Link
+https://www.youtube.com/watch?v=E2DM66yLtNM&list=TLPQMTUwNDIwMjZBt4TWb47-OQ&index=5
+
+## Transcript
+00:00:00
+Hey everyone, welcome to part four of the how Claude code works series. Today we're covering safety, specifically how checkpoints keep your files safe and how permission modes give you control over what Claude can do. Let's jump in. Every single file edit Claude makes is reversible. Before any edit, Claude snapshots the file. If something goes wrong, hit escape twice and you're back to where you were. This works for every file change, whether it's a oneline fix or a multifile ref actor. You always
+
+00:00:32
+have an undo button. Checkpoints cover file changes only. Actions that hit remote systems, databases, APIs, deployments, those can't be undone. That's why Claude asks before running commands with external side effects. The rule is simple. If it touches your local files, it's reversible. If it leaves your machine, it's not. Claude has three permission modes you can cycle through with shift tab. Default mode asks before both edits and commands. Autoedit mode lets Claude edit files freely, but still
+
+00:01:05
+asks before running commands. And plan mode is readon. Claude analyzes your code and creates a plan, but doesn't change anything until you approve. For commands you trust, allow list them in settings.json. Claude won't ask each time. You can set this per project in.cloud/s settings.json per user in your home config or organizationwide for your whole team. It's the best way to speed up your workflow without giving up control. So that's safety in claude code. Checkpoints for file safety,
+
+00:01:37
+permission modes for control, and allow lists for speed. In the final video, part five, we'll cover tips for working effectively with Claude code. Go try it out and I'll see you in the last
+
+## Summary
+- Claude Code ensures **file safety with checkpoints**: before any edit, it snapshots the file so changes are reversible. Pressing escape twice restores the file to its prior state.  
+- **Checkpoints apply only to local file changes**. Actions affecting remote systems (databases, APIs, deployments) cannot be undone, so Claude asks for confirmation before running commands with external side effects.  
+- Claude provides **three permission modes**:  
+  - **Default mode**: asks before both edits and commands.  
+  - **Autoedit mode**: allows file edits freely, but still asks before commands.  
+  - **Plan mode**: read‑only; Claude analyzes and creates a plan without making changes until approved.  
+- Trusted commands can be **allow‑listed** in `settings.json`. This can be configured per project (`.cloud/settings.json`), per user (home config), or organization‑wide.  
+- The combination of **checkpoints, permission modes, and allow lists** gives developers control, reversibility, and speed while maintaining safety.  
+
+This defines Claude Code’s **safety model**: reversible file edits, explicit confirmation for external actions, and configurable permissions for balanced control and efficiency.

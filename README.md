@@ -3,27 +3,43 @@
 ## Philosophy 
 Offline first, timeless, useful, robust, minimalist
 
-## V1 Goal
-A controlled function dispatcher that uses a local language model for intent + text generation
+## Testing Goal
+A controlled function dispatcher that uses a local language model for intent + text generation with MCP support
 
-## V2 Goal
-A customizable, utilitarian Linux distro with bespoke productivity apps, agentic function dispatching and local AI assistance.
+## Alpha Goal
+A customizable, utilitarian Linux distro with bespoke productivity apps, agentic function dispatching and persistent memory.
 
-## V3 Goal
+## Beta Goal
 Fully satisfied the 5 pillars of an agentic operating system
 
 ## Roadmap
-1. Research
+1. Basic research ✓
 2. Testing
-	1. Test local AI
-	3. Build function dispatcher
-	4. Build simple application
-	5. Connect function dispatcher to simple application
-	6. Deploy on clean base os
+	1. Test local AI ✓
+	2. Build function dispatcher ✓
+	3. MCP testing
+	4. Test vector database
+	5. Deploy test build on clean base os
 3. Test Release
-4. V1 Development
-7. V1 Release
-8. V2 Development
-9. V2 Release
-10. V3 Development
-11. V3 Release
+	1. Plan Alpha Suite
+	2. Small group testing
+
+4. Alpha Development
+	1. Integrate memory layer
+	2. Build Alpha Suite
+	3. Housekeeping and documentation
+
+5. Alpha Release
+	1. Hotfixes & updates
+	2. Feedback collection
+	3. Plan Beta Suite
+
+6. Beta Development
+	1. Helpers and utilities
+	2. Build Beta Suite
+	3. Housekeeping & documentation
+
+7. Beta Release
+	1. Hotfixes & updates
+	2. Feedback collection
+	3. Plan v1 Suite

@@ -1,4 +1,4 @@
-# AI OS
+# MERCY OS
 
 ## Philosophy 
 Offline first, timeless, useful, robust, minimalist

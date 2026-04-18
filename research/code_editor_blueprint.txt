@@ -1,55 +1,39 @@
-Here’s the consolidated set of **core features** you’d need to build for a barebones agentic code editing experience.
+Here’s the **balanced consolidation of the core agentic loop** — blending the Claude Code docs (loop, tools, safety, sessions) with Anti‑Gravity’s artifact system, and using the **hidden folder approach** for persistence:
 
 ---
 
-## Core Agentic Loop
-- **Gather context**: read files, run tests, inspect errors, search project sources.  
-- **Take action**: edit files, run commands, generate new code.  
-- **Verify results**: re‑run tests, check outputs, loop back if needed.  
+## Core Agentic Loop with Artifact Persistence
+
+- **Gather context**  
+  - Agent investigates: runs tests, reads errors, searches files, loads docs.  
+  - Produces a **Task List artifact** (markdown file in `.agentic/`): records what it has learned and outlines next steps.  
+  - Stored locally in the hidden folder, versionable with git, ensuring transparency and persistence across sessions.  
+
+- **Take action**  
+  - Agent edits files, runs commands, generates code.  
+  - Produces an **Implementation Plan artifact** (markdown in `.agentic/`): details intended changes, rationale, and verification strategy before modifying the codebase.  
+  - Acts as a checkpoint for human review before execution.  
+
+- **Verify results**  
+  - Agent re‑runs tests, checks outputs, or uses browser automation.  
+  - Produces a **Walkthrough artifact** (markdown in `.agentic/`): documents completed work, verification steps, and evidence (logs, screenshots, PR descriptions).  
+  - Serves as proof of correctness and a record for future debugging.  
+
+- **Loop until completion**  
+  - Each cycle generates or updates artifacts.  
+  - Artifacts persist in the hidden folder, keeping reasoning, plans, and verification accessible across sessions without bloating the context window.  
 
 ---
 
-## Tooling Categories
-- **File operations**: read, edit, create files.  
-- **Search**: find files by pattern, search content with regex.  
-- **Execution**: run shell commands, start servers, run tests, use git.  
-- **Web access**: fetch documentation, search the web.  
-- **Code intelligence**: type errors, jump to definitions, find references.  
+## Barebones Agentic IDE Features (balanced)
+
+1. **Agentic loop**: context → action → verification, repeated until done.  
+2. **Artifact system**: task list, implementation plan, walkthrough — stored in `.agentic/` as markdown for transparency and persistence.  
+3. **Tool categories**: file operations, search, execution, web access, code intelligence.  
+4. **Session/context management**: fresh sessions, resumable/forkable, compaction, sub‑agents.  
+5. **Safety controls**: checkpoints for file edits, permission modes, allow lists for trusted commands.  
+6. **Prompting discipline**: verification criteria, scoped prompts, rich content, persistent project rules (`claude.md` equivalent).  
 
 ---
 
-## Context & Sessions
-- **Session management**: fresh sessions, resume, fork like git branching.  
-- **Context window**: track conversation, files, instructions, tool definitions.  
-- **Compaction**: summarize older context automatically or manually.  
-- **Sub‑agents**: spawn isolated contexts for large tasks, return summaries.  
-
----
-
-## Safety & Control
-- **Checkpoints**: snapshot files before edits, reversible changes.  
-- **Permission modes**: default (ask before edits/commands), autoedit (free edits, confirm commands), plan (read‑only).  
-- **Allow lists**: trusted commands configured per project, user, or org.  
-
----
-
-## Prompting & Workflow
-- **Verification criteria**: tests, screenshots, expected outputs.  
-- **Workflow phases**: explore → plan → implement → commit.  
-- **Scoped prompts**: precise instructions, symptoms, references, avoid vagueness.  
-- **Rich content**: file references, pasted images, URLs, command outputs.  
-- **claude.md equivalent**: persistent project rules, style conventions, test commands, common gotchas.  
-
----
-
-## Consolidated Core
-A barebones agentic IDE needs:  
-1. The **agentic loop** (context → action → verification).  
-2. The **five tool categories** for file, search, execution, web, and code intelligence.  
-3. **Session/context management** with compaction and sub‑agents.  
-4. **Safety controls** via checkpoints, permission modes, and allow lists.  
-5. A **structured workflow** with verification criteria, scoped prompts, rich content, and persistent project rules.  
-
----
-
-This is the minimal foundation for an agentic code editing system: a loop that reasons, acts, and verifies, powered by tools, context management, safety, and structured prompting.
+**Core takeaway**: By combining Claude Code’s structured loop and safety model with Anti‑Gravity’s artifact system — and persisting artifacts in a hidden `.agentic/` folder — you get a barebones agentic IDE that is transparent, inspectable, and resilient across sessions. The artifacts act as living documentation of context, plan, and verification, while the loop ensures iterative progress.

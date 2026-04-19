@@ -17,11 +17,13 @@ Fully satisfied the 5 pillars of an agentic operating system
 2. Testing
 	1. Test local AI ✓
 	2. Build function dispatcher ✓
-	3. Test MCP
+	3. Test UI Frameworks
+		1. Test and demo GTK ✓
+		2. Test and demo Dart & Flutter on Linux
+	4. Test MCP
 		1. Test existing MCP servers & clients
-		2. Build custom MCP server
-		3. Build custom MCP client using API keys
-	4. Test UI Frameworks
+		2. Build and test custom MCP server
+		3. Build and test custom MCP client
 	5. Test vector database
 	6. Deploy test build on clean base os
 

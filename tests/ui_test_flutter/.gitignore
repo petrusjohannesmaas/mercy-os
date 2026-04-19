@@ -1,7 +1,3 @@
-venv
-models
-*.mkv
-
 # Miscellaneous
 *.class
 *.log
@@ -47,6 +43,3 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-
-tests/ui_test_flutter/linux/*
-

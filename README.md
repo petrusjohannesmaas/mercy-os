@@ -4,7 +4,7 @@
 Offline first, timeless, useful, robust, minimalist
 
 ## Testing Goal
-A controlled function dispatcher that uses a local language model for intent + text generation with MCP support
+A controlled function dispatcher that uses MCP with an LLM for intent based tool calling + text generation
 
 ## Alpha Goal
 A customizable, utilitarian Linux distro with bespoke productivity apps, agentic function dispatching and persistent memory.
@@ -17,9 +17,14 @@ Fully satisfied the 5 pillars of an agentic operating system
 2. Testing
 	1. Test local AI ✓
 	2. Build function dispatcher ✓
-	3. MCP testing
-	4. Test vector database
-	5. Deploy test build on clean base os
+	3. Test MCP
+		1. Test existing MCP servers & clients
+		2. Build custom MCP server
+		3. Build custom MCP client using API keys
+	4. Test UI Frameworks
+	5. Test vector database
+	6. Deploy test build on clean base os
+
 3. Test Release
 	1. Plan Alpha Suite
 	2. Small group testing

@@ -1,52 +1,70 @@
 # MERCY OS
 
-## Philosophy 
-Offline first, timeless, useful, robust, minimalist
+Mercy OS is an immutable, declarative, AI-native operating system designed to turn natural language into real, local actions—without sacrificing control, security, or reproducibility.
 
-## Testing Goal
-A controlled function dispatcher that uses MCP with an LLM for intent based tool calling + text generation
+Instead of treating AI as just another application, Mercy OS treats it as a first-class interface layer. A secure local agent interprets user intent and routes it into isolated tools and structured workflows, creating a system that feels both powerful and predictable.
 
-## Alpha Goal
-A customizable, utilitarian Linux distro with bespoke productivity apps, agentic function dispatching and persistent memory.
+## Core Components (Mental Model)
 
-## Beta Goal
-Fully satisfied the 5 pillars of an agentic operating system
+Mercy OS is built around four simple, composable parts:
+
+-   Mercy Shell – GTK-based frontend (Spotlight / Run-style interface)    
+-   Mercy Router – local daemon that classifies intent and routes requests
+-   Mercy Tools – isolated, MCP-capable apps/containers exposing capabilities
+-   Mercy Workflows – LangGraph-based pipelines for multi-step tasks
+
+## Extended Architecture
+
+Under the hood, these components are supported by a more structured system:
+
+-   Immutable Base OS – minimal, reproducible, image-based foundation
+-   Agent Runtime – LLM-powered reasoning layer (LangChain / LangGraph)
+-   MCP Interface Layer – standardized protocol for tool discovery and execution
+-   Container Runtime – rootless Podman for isolating tools and agents
+-   Message Bus / IPC – communication layer between components (sockets, pub/sub, etc.)
+-   Config & State Layer – persistent configs and runtime data (`/var`, user config)
+-   Security Boundary – strict separation between AI, tools, and the base system
+
+
+## Philosophy
+
+Mercy OS follows three core principles:
+
+-   **Fast at the edge**: immediate responses for simple interactions
+-   **Strict at the boundary**: strong isolation between system and AI
+-   **Agentic when necessary**: workflows only when the problem requires it
 
 ## Roadmap
-1. Basic research ✓
-2. Testing
-	1. Test local AI ✓
-	2. Build function dispatcher ✓
-	3. Test UI Frameworks
-		1. Test and demo GTK ✓
-		2. Test and demo Dart & Flutter on Linux
-	4. Test MCP
-		1. Test existing MCP servers & clients
-		2. Build and test custom MCP server
-		3. Build and test custom MCP client
-	5. Test vector database
-	6. Deploy test build on clean base os
 
-3. Test Release
-	1. Plan Alpha Suite
-	2. Small group testing
+### Testing Phase Q2 2026
+**Goal:** Explore and validate each subsystem in isolation gaining insight into their behavior, capabilities, and limitations before moving toward integration.
 
-4. Alpha Development
-	1. Integrate memory layer
-	2. Build Alpha Suite
-	3. Housekeeping and documentation
+1. Test local AI ✓
+2. Build function dispatcher ✓
+3. Test UI Frameworks ✓
+	1. Test and demo GTK ✓
+	2. Test and demo Dart & Flutter on Linux ✓
+4. Test MCP
+	1. Test existing MCP servers & clients ✓
+	2. Build and test custom MCP server 
+	3. Build and test custom MCP client
+5. Test memory layer
+	1. Test vector database with embedded models
+	2. Test RAG system
+6. Test agent frameworks
+	1. Test Langchain
+	2. Test LangGraph
+	3. Build and test custom agent framework
+7. Working test build
+	1. Roll all test findings into a working test build
+	2. Create a functional agent for the test build
+	3. Add a persistent memory system to the test build
 
-5. Alpha Release
-	1. Hotfixes & updates
-	2. Feedback collection
-	3. Plan Beta Suite
+### Alpha Goal Q4 2026
+**Goal:** A customizable, utilitarian Linux distro with bespoke productivity apps, agentic function dispatching and persistent memory.
 
-6. Beta Development
-	1. Helpers and utilities
-	2. Build Beta Suite
-	3. Housekeeping & documentation
+### Beta Goal Q3 2027
+**Goal:** Fully satisfied the 5 pillars of an agentic operating system
 
-7. Beta Release
-	1. Hotfixes & updates
-	2. Feedback collection
-	3. Plan v1 Suite
+### V1 Goal Q1 2028
+**Goal:** A Stable Release with Bespoke Productivity Apps, Agentic Function Dispatching, Persistent Memory and Advanced Security Features

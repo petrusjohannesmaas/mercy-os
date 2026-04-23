@@ -1,70 +1,81 @@
-# MERCY OS
+# Mercy OS
 
-Mercy OS is an immutable, declarative, AI-native operating system designed to turn natural language into real, local actions—without sacrificing control, security, or reproducibility.
+Mercy OS is an immutable, declarative, AI-native operating system designed to turn natural language into real, local actions — without sacrificing control, reproducibility, or security.
 
-Instead of treating AI as just another application, Mercy OS treats it as a first-class interface layer. A secure local agent interprets user intent and routes it into isolated tools and structured workflows, creating a system that feels both powerful and predictable.
+Rather than treating AI as an application layer, Mercy OS treats it as the primary interface. A local agent interprets user intent and routes it into isolated, structured tools — creating a system that is both powerful and predictable.
 
-## Core Components (Mental Model)
+---
 
-Mercy OS is built around four simple, composable parts:
+## What It Is
 
--   Mercy Shell – GTK-based frontend (Spotlight / Run-style interface)    
--   Mercy Router – local daemon that classifies intent and routes requests
--   Mercy Tools – isolated, MCP-capable apps/containers exposing capabilities
--   Mercy Workflows – LangGraph-based pipelines for multi-step tasks
+Most operating systems expose their capabilities through menus, windows, and file browsers. Mercy OS exposes them through natural language. You describe what you want. The system figures out which tool to call, calls it, and returns the result.
 
-## Extended Architecture
+This is not a chatbot wrapper. The AI is the shell.
 
-Under the hood, these components are supported by a more structured system:
+---
 
--   Immutable Base OS – minimal, reproducible, image-based foundation
--   Agent Runtime – LLM-powered reasoning layer (LangChain / LangGraph)
--   MCP Interface Layer – standardized protocol for tool discovery and execution
--   Container Runtime – rootless Podman for isolating tools and agents
--   Message Bus / IPC – communication layer between components (sockets, pub/sub, etc.)
--   Config & State Layer – persistent configs and runtime data (`/var`, user config)
--   Security Boundary – strict separation between AI, tools, and the base system
+## How It Works
 
+Mercy OS is built around four composable layers:
+
+**Mercy Shell** — a lightweight GTK interface. The user's only interaction point. Accepts natural language input, displays results.
+
+**Mercy Router** — a local daemon powered by an LLM (currently Gemini). Reads available tools, decides which one matches the user's intent, and dispatches a structured call.
+
+**Mercy Tools** — isolated binaries that expose discrete capabilities via the Model Context Protocol (MCP). Each tool is self-contained: its own logic, its own schema, its own Nix module.
+
+**Mercy Workflows** — LangGraph-based pipelines for multi-step tasks that require more than a single tool call. Planned for a later phase.
+
+---
+
+## Key Architecture Decisions
+
+**NixOS as the foundation.** The entire system — OS, tools, dependencies, configuration — is declared in code. Builds are reproducible. There is no configuration drift. Rollback is trivial.
+
+**Nix Modules for tool packaging.** Each tool ships as a self-contained Nix module alongside its Python source. Adding a tool to the system is a single `imports` line. No manual wiring. No global state changes.
+
+**MCP as the tool protocol.** Tools communicate through a structured, schema-enforced interface. The router never calls tool logic directly. This keeps the agent layer decoupled from implementation details and makes tools independently testable.
+
+**Declarative discovery.** Tools register themselves via JSON manifests placed at a known system path. The router discovers them at runtime — no hardcoded tool lists anywhere in the system.
+
+**Strict isolation.** Tools are stateless binaries spawned on demand. They have no access to each other, no persistent runtime, and no knowledge of the agent layer.
+
+---
+
+## Project Status
+
+Currently in **Testing Phase (Q2 2026)** — validating each subsystem in isolation before integration.
+
+| Milestone | Target | Status |
+|-----------|--------|--------|
+| Testing Phase | Q2 2026 | In progress |
+| Alpha — utilitarian distro with agentic dispatch and memory | Q4 2026 | Planned |
+| Beta — satisfies the 5 pillars of an agentic OS | Q3 2027 | Planned |
+| V1 — stable release | Q1 2028 | Planned |
+
+---
+
+## Repository Structure
+
+```
+mercy-os/
+├── flake.nix
+├── configuration.nix
+├── apps/                  # user-facing tools
+│   ├── calculator/
+│   └── greeter/
+└── core/                  # system logic
+    ├── shell/
+    ├── router/
+    └── config/
+```
+
+---
 
 ## Philosophy
 
-Mercy OS follows three core principles:
+**Fast at the edge** — simple interactions return results immediately, no pipeline overhead.
 
--   **Fast at the edge**: immediate responses for simple interactions
--   **Strict at the boundary**: strong isolation between system and AI
--   **Agentic when necessary**: workflows only when the problem requires it
+**Strict at the boundary** — the AI layer and the tool layer are structurally separated. The agent decides; the tool executes. Neither crosses into the other's domain.
 
-## Roadmap
-
-### Testing Phase Q2 2026
-**Goal:** Explore and validate each subsystem in isolation gaining insight into their behavior, capabilities, and limitations before moving toward integration.
-
-1. Test local AI ✓
-2. Build function dispatcher ✓
-3. Test UI Frameworks ✓
-	1. Test and demo GTK ✓
-	2. Test and demo Dart & Flutter on Linux ✓
-4. Test MCP
-	1. Test existing MCP servers & clients ✓
-	2. Build and test custom MCP server 
-	3. Build and test custom MCP client
-5. Test memory layer
-	1. Test vector database with embedded models
-	2. Test RAG system
-6. Test agent frameworks
-	1. Test Langchain
-	2. Test LangGraph
-	3. Build and test custom agent framework
-7. Working test build
-	1. Roll all test findings into a working test build
-	2. Create a functional agent for the test build
-	3. Add a persistent memory system to the test build
-
-### Alpha Goal Q4 2026
-**Goal:** A customizable, utilitarian Linux distro with bespoke productivity apps, agentic function dispatching and persistent memory.
-
-### Beta Goal Q3 2027
-**Goal:** Fully satisfied the 5 pillars of an agentic operating system
-
-### V1 Goal Q1 2028
-**Goal:** A Stable Release with Bespoke Productivity Apps, Agentic Function Dispatching, Persistent Memory and Advanced Security Features
+**Agentic when necessary** — workflows engage only when the task genuinely requires multi-step reasoning. The default is the simplest path that works.

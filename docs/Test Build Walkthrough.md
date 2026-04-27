@@ -1,13 +1,17 @@
 # Mercy OS — Test Build Walkthrough
 
-This guide builds the first working end-to-end loop of Mercy OS on your NixOS VM: natural language in, structured tool execution out. By the end, typing "add 2 and 2" into the shell will route through an LLM, discover the calculator tool, call it over MCP, and display the result.
+This guide builds the first working end-to-end loop of Mercy OS on your NixOS VM: natural language in, structured tool execution out. By the end, typing "add 2 and 2" into the shell will route through a local Gemma model via llama.cpp, discover the calculator tool, call it over MCP, and display the result.
+
+The shell is a terminal client for this phase — no display server required, runs cleanly over SSH into your KVM VM.
 
 ---
 
 ## What We're Building
 
 ```
-Shell  →  Router  →  Tool Registry  →  MCP Client  →  Calculator  →  Result
+Shell (terminal)  →  Router  →  Tool Registry  →  MCP Client  →  Tool  →  Result
+                         |
+                   Gemma (local, llama.cpp)
 ```
 
 Two tools to validate the architecture: `calculator` (arithmetic) and `greeter` (string output). If both work without touching the router, the architecture is confirmed.
@@ -35,11 +39,14 @@ mercy-os/
 │
 └── core/
     ├── shell/
-    │   └── shell.py
-    └── router/
-        ├── router.py
-        ├── mcp_client.py
-        └── tool_registry.py
+    │   ├── shell.py
+    │   └── module.nix
+    ├── router/
+    │   ├── router.py
+    │   ├── mcp_client.py
+    │   └── tool_registry.py
+    └── runtime/
+        └── model.nix
 ```
 
 ---
@@ -255,84 +262,149 @@ def call(binary, tool, arguments):
 
 ### `core/router/router.py`
 
+The router uses `llama-cpp-python` to run a local Gemma model. The model is loaded once at import time. `response_format` with an enum constraint pins the model to only output a tool name that exists in the registry, which is more reliable than prompt-only enforcement — especially important for a small 2B model.
+
+`n_gpu_layers=0` is set explicitly for the test build since the KVM VM runs CPU-only. Update this if you move to hardware with a compatible GPU.
+
 ```python
-import json, os
+import json
+from llama_cpp import Llama
 from tool_registry import load_tools
 from mcp_client import call
-from langchain_google_genai import ChatGoogleGenerativeAI
+
+MODEL_PATH = "/etc/mercy/models/gemma.gguf"
+
+llm = Llama(
+    model_path=MODEL_PATH,
+    n_ctx=2048,
+    n_gpu_layers=0,       # CPU-only for KVM VM test build
+    chat_format="gemma"
+)
 
 tools = load_tools()
 
-llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash",
-    temperature=0,
-    google_api_key=os.getenv("GOOGLE_API_KEY")
-)
-
 def route(query: str):
-    prompt = f"""
-You are a system router.
+    messages = [
+        {"role": "system", "content": "You are a tool router. Return JSON with 'tool' and 'arguments'."},
+        {"role": "user", "content": f"Tools: {json.dumps(tools)}\n\nQuery: {query}"}
+    ]
 
-Available tools:
-{json.dumps(tools, indent=2)}
+    response = llm.create_chat_completion(
+        messages=messages,
+        response_format={
+            "type": "json_object",
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "tool": {"type": "string", "enum": [t["name"] for t in tools]},
+                    "arguments": {"type": "object"}
+                },
+                "required": ["tool", "arguments"]
+            }
+        },
+        temperature=0.0
+    )
 
-User query: {query}
-
-Respond ONLY in JSON:
-{{"tool": "...", "arguments": {{...}}}}
-"""
-    decision = json.loads(llm.invoke(prompt).content)
+    decision = json.loads(response["choices"][0]["message"]["content"])
 
     for t in tools:
         if t["name"] == decision["tool"]:
             return call(t["binary"], decision["tool"], decision["arguments"])
 
-    return "No valid tool found."
+    return "No tool matched."
 ```
 
 ### `core/shell/shell.py`
 
+The shell is a terminal REPL for the test phase — no display server, no GTK dependency. Runs directly over SSH into the VM.
+
 ```python
-import gi
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GLib
-import threading, sys
+import sys
 sys.path.insert(0, "/etc/mercy/core/router")
 import router
 
-class Shell(Gtk.Window):
-    def __init__(self):
-        super().__init__(title="Mercy Shell")
-        self.set_default_size(400, 150)
+def main():
+    print("Mercy Shell — type 'exit' to quit\n")
+    while True:
+        try:
+            query = input("> ").strip()
+            if query.lower() == "exit":
+                break
+            if not query:
+                continue
+            result = router.route(query)
+            print(result)
+        except (KeyboardInterrupt, EOFError):
+            break
 
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        self.add(box)
+if __name__ == "__main__":
+    main()
+```
 
-        self.entry = Gtk.Entry()
-        self.entry.connect("activate", self.on_enter)
-        box.pack_start(self.entry, False, False, 0)
+### `core/shell/module.nix`
 
-        self.label = Gtk.Label(label="Ready")
-        box.pack_start(self.label, True, True, 0)
+```nix
+{ config, pkgs, lib, ... }:
 
-    def on_enter(self, widget):
-        query = widget.get_text()
-        self.label.set_text("Thinking...")
-        threading.Thread(target=self.run, args=(query,), daemon=True).start()
+let
+  mercyShell = pkgs.python3Packages.buildPythonApplication {
+    pname = "mercy-shell";
+    version = "0.1";
+    src = ./.;
+    propagatedBuildInputs = [ pkgs.python3Packages.llama-cpp-python ];
+    installPhase = ''
+      mkdir -p $out/bin
+      cp shell.py $out/bin/mercy-shell
+      chmod +x $out/bin/mercy-shell
+    '';
+  };
+in {
+  options.mercy.core.shell.enable =
+    lib.mkEnableOption "Mercy terminal shell";
 
-    def run(self, query):
-        result = router.route(query)
-        GLib.idle_add(self.label.set_text, str(result))
-
-win = Shell()
-win.connect("destroy", Gtk.main_quit)
-win.show_all()
-Gtk.main()
+  config = lib.mkIf config.mercy.core.shell.enable {
+    environment.systemPackages = [ mercyShell ];
+  };
+}
 ```
 
 ---
 
-## Step 4 — Nix Configuration
+## Step 4 — Model Module
+
+The model is fetched as a fixed-output derivation and placed at a known system path. The router reads it from there — same pattern as the tool manifests.
+
+Before adding this to your config, get the SHA-256 hash of your GGUF file:
+
+```bash
+nix-prefetch-url <your-huggingface-direct-download-url>
+```
+
+Paste the result into the `hash` field below.
+
+### `core/runtime/model.nix`
+
+```nix
+{ config, pkgs, lib, ... }:
+
+let
+  gemmaModel = pkgs.fetchurl {
+    url = "https://huggingface.co/<repo>/resolve/main/gemma-4-e2b-it-Q4_K_M.gguf";
+    hash = "sha256-<paste-hash-here>";
+  };
+in {
+  options.mercy.runtime.model.enable =
+    lib.mkEnableOption "Mercy local Gemma model";
+
+  config = lib.mkIf config.mercy.runtime.model.enable {
+    environment.etc."mercy/models/gemma.gguf".source = gemmaModel;
+  };
+}
+```
+
+---
+
+## Step 5 — Nix Configuration
 
 ### `flake.nix`
 
@@ -365,30 +437,34 @@ Gtk.main()
     ./hardware-configuration.nix
     ./apps/calculator/module.nix
     ./apps/greeter/module.nix
+    ./core/shell/module.nix
+    ./core/runtime/model.nix
   ];
 
   mercy.tools.calculator.enable = true;
   mercy.tools.greeter.enable = true;
-
-  services.xserver.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-
-  environment.variables.GOOGLE_API_KEY = "YOUR_API_KEY_HERE";
+  mercy.core.shell.enable = true;
+  mercy.runtime.model.enable = true;
 
   environment.systemPackages = with pkgs; [
-    python3Packages.pygobject3
-    python3Packages.langchain
-    python3Packages.langchain-google-genai
+    python3Packages.llama-cpp-python
+    python3Packages.fastmcp
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  users.users.mercy = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ];
+  };
 }
 ```
 
+Note: `services.xserver` and all GTK/Gemini dependencies are removed. The test build is headless — SSH in and run the shell directly.
+
 ---
 
-## Step 5 — Build and Run
+## Step 6 — Build and Run
 
 ```bash
 sudo nixos-rebuild switch --flake .#mercy
@@ -401,16 +477,16 @@ mercy-shell
 
 **Query:** `add 2 and 2`
 
-1. Shell sends query to router
+1. Shell passes query to router
 2. Router loads `/etc/mercy/tools/*.json`
-3. LLM responds: `{"tool": "add", "arguments": {"a": 2, "b": 2}}`
+3. Gemma responds: `{"tool": "add", "arguments": {"a": 2, "b": 2}}`
 4. MCP client spawns `mercy-calculator-mcp`, sends request
-5. Shell displays: `4`
+5. Shell prints: `4`
 
 **Query:** `greet Alice`
 
 1. Router selects `greeter` — no code changes required
-2. Shell displays: `Hello, Alice!`
+2. Shell prints: `Hello, Alice!`
 
 The second query confirming correct tool selection without router modification is the proof that the architecture works.
 
@@ -420,6 +496,7 @@ The second query confirming correct tool selection without router modification i
 
 - No streaming
 - No retry logic
-- LLM prompt is minimal — will need hardening for ambiguous queries
+- `n_gpu_layers=0` — CPU-only inference, expect slower response times
+- `chat_format="gemma"` must match the installed version of `llama-cpp-python` — verify on first run
 - No schema validation on MCP responses
-- `GOOGLE_API_KEY` set as a plain environment variable
+- Model hash in `model.nix` must be populated manually before build

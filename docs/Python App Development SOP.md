@@ -7,9 +7,9 @@
 ### Execution Pipeline
 
 ```
-Mercy Shell  (GTK UI)
+Mercy Shell  (terminal client)
       |
-Mercy Router  (LLM decision layer)
+Mercy Router  (local Gemma via llama.cpp)
       |
 Tool Registry  (/etc/mercy/tools/*.json)
       |
@@ -37,12 +37,14 @@ mercy-os/
 │
 └── core/                            # system logic
     ├── shell/
-    │   └── shell.py
+    │   ├── shell.py
+    │   └── module.nix
     ├── router/
     │   ├── router.py
     │   ├── mcp_client.py
     │   └── tool_registry.py
-    └── config/
+    └── runtime/
+        └── model.nix
 ```
 
 ### Key Properties
@@ -133,8 +135,9 @@ in {
 | Flake | `flake.nix` | Entry point, inputs, exposes `nixosConfigurations` |
 | Base config | `configuration.nix` | Imports modules, sets enable flags, machine-specific config |
 | Tool module | `apps/<tool>/module.nix` | Builds binary, registers manifest, owns all tool-level Nix logic |
+| Core module | `core/<component>/module.nix` | Builds core binaries (shell, runtime); same pattern as tool modules |
 
-`flake.nix` does not need to be edited when adding a tool. Only `configuration.nix` gains one `imports` line and one `enable = true`.
+`flake.nix` does not need to be edited when adding a tool or core component. Only `configuration.nix` gains one `imports` line and one `enable = true`.
 
 ---
 

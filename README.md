@@ -18,9 +18,9 @@ This is not a chatbot wrapper. The AI is the shell.
 
 Mercy OS is built around four composable layers:
 
-**Mercy Shell** — a lightweight GTK interface. The user's only interaction point. Accepts natural language input, displays results.
+**Mercy Shell** — the user's only interaction point. Currently a terminal client; a graphical interface is planned for a later phase. Accepts natural language input, displays results.
 
-**Mercy Router** — a local daemon powered by an LLM (currently Gemini). Reads available tools, decides which one matches the user's intent, and dispatches a structured call.
+**Mercy Router** — a local daemon powered by a small Gemma model running via llama.cpp. Reads available tools, decides which one matches the user's intent, and dispatches a structured call.
 
 **Mercy Tools** — isolated binaries that expose discrete capabilities via the Model Context Protocol (MCP). Each tool is self-contained: its own logic, its own schema, its own Nix module.
 
@@ -67,15 +67,17 @@ mercy-os/
 └── core/                  # system logic
     ├── shell/
     ├── router/
-    └── config/
+    └── runtime/
 ```
 
 ---
 
 ## Philosophy
 
-**Fast at the edge** — simple interactions return results immediately, no pipeline overhead.
+**Local by default.** The model runs on the machine. No API calls, no cloud dependency, no data leaving the system. This is a hard constraint, not a preference.
 
-**Strict at the boundary** — the AI layer and the tool layer are structurally separated. The agent decides; the tool executes. Neither crosses into the other's domain.
+**Declarative over imperative.** The entire system — OS, tools, model, dependencies — is expressed as code. Nothing is configured manually. Nothing drifts. If it isn't declared, it doesn't exist.
 
-**Agentic when necessary** — workflows engage only when the task genuinely requires multi-step reasoning. The default is the simplest path that works.
+**Strict at the boundary.** The agent decides. The tool executes. These are structurally separate and neither crosses into the other's domain. The router never touches tool logic; tools never touch the agent layer.
+
+**Complexity earns its place.** The default path is the simplest one that works. Workflows, memory, and multi-step reasoning engage only when the problem genuinely requires them — not as a default architectural assumption.

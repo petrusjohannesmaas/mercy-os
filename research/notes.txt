@@ -1,0 +1,2 @@
+* Message queues?
+* nix-shell for disposable AI execution environments?
